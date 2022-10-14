@@ -12,8 +12,8 @@ class DB
         $this->db = new SQLite3(DB_FILE, SQLITE3_OPEN_READWRITE);
 
         // Debug mode
-        $this->db->exec("DROP TABLE IF EXISTS client;");
-        $this->db->exec("DROP TABLE IF EXISTS config;");
+//        $this->db->exec("DROP TABLE IF EXISTS client;");
+//        $this->db->exec("DROP TABLE IF EXISTS config;");
 
 
         $this->db->exec("CREATE TABLE IF NOT EXISTS client (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, IPv4 TEXT NOT NULL, key_private TEXT, key_public TEXT, is_granted INTEGER DEFAULT 0, handshake_at TEXT, active_at TEXT);");
@@ -37,6 +37,15 @@ class DB
         $query->bindValue(':key_private', $key_private, SQLITE3_TEXT);
         $query->bindValue(':key_public', $key_public, SQLITE3_TEXT);
         $query->execute();
+    }
+
+    public function peer_append(string $key_private, string $key_public, bool $random = false) {
+        $query = $this->db->prepare('UPDATE client SET key_private = :key_private, key_public = :key_public, is_granted = 1 WHERE is_granted = 0 ORDER BY id ASC LIMIT 1');
+        $query->bindValue(':key_private', $key_private, SQLITE3_TEXT);
+        $query->bindValue(':key_public', $key_public, SQLITE3_TEXT);
+        $query->execute();
+
+        return $this->db->lastInsertRowID();
     }
 
     public function config_insert(string $key, string $value)

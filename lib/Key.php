@@ -15,7 +15,7 @@ class Key
         return null;
     }
 
-    public function public($key_private): ?string {
+    public function public(string $key_private): ?string {
         $stdout = null;
         $code = null;
 
