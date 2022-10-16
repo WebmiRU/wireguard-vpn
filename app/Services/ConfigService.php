@@ -73,8 +73,9 @@ class ConfigService implements ConfigServiceInterface
 
                 $ip4_client = long2ip($ip4Start + $i);
 
-                Client::create([
+                Client::updateOrCreate([
                     'ip4' => $ip4_client,
+                ], [
                     'key_private' => $keyPrivate,
                     'key_public' => $keyPublic,
                 ]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Interfaces\ConfigServiceInterface;
 use App\Interfaces\KeyServiceInterface;
+use App\Interfaces\WireguardServiceInterface;
 use App\Models\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,12 @@ class UserController extends Controller
         return response()->json($model);
     }
 
-    public function post(Request $request, KeyServiceInterface $keyService, ConfigServiceInterface $configService): JsonResponse
+    public function post(
+        Request $request,
+        KeyServiceInterface $keyService,
+        ConfigServiceInterface $configService,
+        WireguardServiceInterface $wireguardService,
+    ): JsonResponse
     {
         $randomIp = $request->get('random_ip', false);
         $model = Client::where('is_granted', 0);
@@ -36,6 +42,8 @@ class UserController extends Controller
         ]);
 
         $configService->peerAppend($model->ip4, $keyPublic);
+//        $wireguardService->setConfig();
+        $wireguardService->syncConfig();
 
         return response()->json($model);
     }
