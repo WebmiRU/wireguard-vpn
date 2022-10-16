@@ -1,0 +1,18 @@
+version: "3"
+services:
+  apache:
+    env_file:
+      - ./.env
+    cap_add:
+      - NET_ADMIN
+    build:
+      context: ./docker/apache2
+      dockerfile: Dockerfile
+    container_name: cubicat-vpn
+    ports:
+      - 8100:80
+      - 52001:52000/udp
+    volumes:
+      - ./:/data
+      - ./:/app
+    #restart: unless-stopped

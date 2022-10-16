@@ -13,6 +13,14 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$router->get('/', 'IndexController@index');
+
+$router->group(['prefix' => 'user'], function () use ($router) {
+    $router->get('{id}', 'UserController@get');
+    $router->post('/', 'UserController@post');
+
+
+//    $router->get('user/profile', function () {
+//        // Uses Auth Middleware
+//    });
 });
